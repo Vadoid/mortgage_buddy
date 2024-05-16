@@ -7,17 +7,18 @@ from datetime import datetime, timedelta
 locale.setlocale(locale.LC_ALL, '')
 
 # Set page layout to wide
-st.set_page_config(layout="wide")
+st.set_page_config(page_title="Mortgage Buddy", layout="wide")
 
 def add_logo():
     st.markdown(
         """
         <style>
             [data-testid="stSidebarNav"] {
-                background-image: url(https://raw.githubusercontent.com/Vadoid/mortgage_buddy/main/img/buddy1.png);
+                background-image: url(https://raw.githubusercontent.com/Vadoid/mortgage_buddy/main/img/buddy.png);
                 background-repeat: no-repeat;
-                padding-top: 120px;
-                background-size: 200px 200px;
+                background-position: right;
+                padding-top: 60px;
+                background-size: 160px 150px;
                 background-position: 20px 20px;
             }
             [data-testid="stSidebarNav"]::before {
@@ -138,10 +139,10 @@ tab1, tab2 = st.tabs(["Mortgage Details", "Simulation and Analysis"])
 # Inputs tab
 with tab1:
     st.header("Mortgage Details")
-    interest_rate = st.number_input('Current Interest Rate (%)', min_value=0.0, value=3.5, step=0.1)
+    interest_rate = st.number_input('Current Interest Rate (%)', min_value=0.0, value=3.5, step=0.1, help="Your current mortgage rate")
     years_left = st.number_input('Time Left on Mortgage (years)', min_value=1, value=30, step=1)
     balance_input = st.text_input('Current Mortgage Balance', value='250,000')
-    start_date = st.date_input("Calculate from date (optional)", value=None)
+    start_date = st.date_input("Calculate from date (optional)", value=None, help="Optional date for calculations")
     
     if st.button('Calculate Mortgage Details'):
         try:
@@ -168,8 +169,8 @@ with tab2:
 
     with col1:
         st.header("Simulation")
-        additional_repayment = st.number_input('Additional Monthly Repayment', min_value=0.0, value=0.0, step=100.0)
-        lump_sum = st.number_input('One Time Lump Sum (optional)', min_value=0.0, value=0.0, step=1000.0)
+        additional_repayment = st.number_input('Additional Monthly Repayment', min_value=0.0, value=0.0, step=100.0, help="Additional monthly payment increase")
+        lump_sum = st.number_input('One Time Lump Sum (optional)', min_value=0.0, value=0.0, step=1000.0, help="If you were to pay in a one off lump sum")
         balance = locale.atof(balance_input.replace(',', ''))
 
         if lump_sum > balance:
@@ -177,16 +178,16 @@ with tab2:
 
         # Container for the new rate and date fields
         with st.container():
-            new_rate = st.number_input('New Mortgage Rate (%) (optional)', min_value=0.0, value=0.0, step=0.1)
-            new_rate_date = st.date_input("Date for New Rate to Kick In (optional)", value=None)
+            new_rate = st.number_input('New Mortgage Rate (%) (optional)', min_value=0.0, value=0.0, step=0.1, help="New mortgage rate")
+            new_rate_date = st.date_input("Date for New Rate to Kick In (optional)", value=None, help="Date from which new rate is effective")
 
         # Validation for new rate and date fields
         if (new_rate > 0 and not new_rate_date) or (new_rate_date and new_rate == 0.0):
-            st.error("Both the new mortgage rate and the date it kicks in must be provided together.")
+            st.warning("Both the new mortgage rate and the date it kicks in must be provided together.")
 
         if st.button('Run Simulation'):
             if (new_rate > 0 and not new_rate_date) or (new_rate_date and new_rate == 0.0):
-                st.error("Both the new mortgage rate and the date it kicks in must be provided together.")
+                st.warning("Both the new mortgage rate and the date it kicks in must be provided together.")
             else:
                 try:
                     if balance > 0:
@@ -196,16 +197,16 @@ with tab2:
                             new_rate if new_rate > 0 else None, new_rate_date if new_rate_date else None
                         )
 
-                        st.write('Monthly Mortgage Repayment Schedule (Old calculations):')
+                        st.write('Monthly Mortgage Repayment Schedule (Old parameters):')
                         st.dataframe(schedule_without_additional)
-                        st.write('Monthly Mortgage Repayment Schedule (New calculations):')
+                        st.write('Monthly Mortgage Repayment Schedule (New parameters):')
                         st.dataframe(schedule_with_additional)
 
                         # Plot the data
                         chart_data = pd.DataFrame({
                             'Date': schedule_without_additional['Date'],
-                            'Remaining Balance (Old calculations)': schedule_without_additional['Remaining Balance'],
-                            'Remaining Balance (New calculations)': schedule_with_additional['Remaining Balance']
+                            'Old Parameters': schedule_without_additional['Remaining Balance'],
+                            'New Parameters': schedule_with_additional['Remaining Balance']
                         }).set_index('Date')
                         st.line_chart(chart_data)
 
@@ -213,8 +214,8 @@ with tab2:
                         end_date_without_additional = schedule_without_additional['Date'].iloc[-1]
                         end_date_with_additional = schedule_with_additional['Date'].iloc[-1]
 
-                        st.write(f"**End Date (Old calculations):** {end_date_without_additional}")
-                        st.write(f"**End Date (New calculations):** {end_date_with_additional}")
+                        #st.write(f"**End date (old parameters):** {end_date_without_additional}")
+                        #st.write(f"**End Date (new parameters):** {end_date_with_additional}")
 
                         # Save values to session state
                         st.session_state['total_principal_paid_without_additional'] = total_principal_paid_without_additional

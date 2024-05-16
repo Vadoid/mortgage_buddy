@@ -5,6 +5,9 @@ import locale
 # Set the locale to the user's default setting (for number formatting)
 locale.setlocale(locale.LC_ALL, '')
 
+# Set page layout to wide
+st.set_page_config(page_title="Mortgage Buddy", layout="wide")
+
 def calculate_compound_interest(principal, annual_rate, inflation_rate, years):
     data = []
     total_balance = principal
