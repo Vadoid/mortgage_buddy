@@ -141,6 +141,7 @@ with tab1:
     st.header("Mortgage Details")
     interest_rate = st.number_input('Current Interest Rate (%)', min_value=0.0, value=3.5, step=0.1, help="Your current mortgage rate")
     years_left = st.number_input('Time Left on Mortgage (years)', min_value=1, value=30, step=1)
+    st.session_state['years_left'] =  years_left
     balance_input = st.text_input('Current Mortgage Balance', value='250,000')
     start_date = st.date_input("Calculate from date (optional)", value=None, help="Optional date for calculations")
     
@@ -229,6 +230,7 @@ with tab2:
                         st.session_state['end_date_with_additional'] = end_date_with_additional
                         st.session_state['total_monthly_payment_with_additional'] = total_monthly_payment_with_additional
                         st.session_state['lump_sum'] = lump_sum
+                        st.session_state['years_left'] =  years_left
 
                         # Display the summary in the right column
                         with col2:

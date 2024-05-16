@@ -39,8 +39,14 @@ def calculate_compound_interest(principal, annual_rate, inflation_rate, years):
     total_balance = principal
     for year in range(1, years + 1):
         interest_accrued = total_balance * (annual_rate / 100)
-        inflation_adjustment = total_balance * (inflation_rate / 100)
+
+        if st.session_state.inflation_status == False:
+            inflation_adjustment = 0
+        else:
+            inflation_adjustment = total_balance * (inflation_rate / 100)
+
         total_balance += (interest_accrued - inflation_adjustment)
+
         data.append({
             'Year': year,
             'Interest Accrued': round(interest_accrued, 2),
@@ -62,8 +68,9 @@ session_state_defaults = {
     'end_date_with_additional': None,
     'total_monthly_payment_with_additional': 0,
     'lump_sum': 0,
+    'savings_period': 30,
     'years_left': 30,
-    'savings_period': 30
+    'inflation_status': False
 }
 
 for key, value in session_state_defaults.items():
@@ -76,7 +83,7 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.write("## Savings calculator")
-    savings_amount_input = st.text_input("Amount of Savings", value='1,000')
+    savings_amount_input = st.text_input("Amount of Savings", value='10,000')
     try:
         savings_amount = locale.atof(savings_amount_input.replace(',', ''))
     except ValueError:
@@ -85,17 +92,13 @@ with col1:
 
     annual_return_rate = st.number_input("Average Annual Return Rate (%)", min_value=0.0, value=5.0, step=0.1)
     inflation_rate = st.number_input("Average Inflation Prediction (%)", min_value=0.0, value=2.0, step=0.1)
-    savings_period = st.number_input("Period of Savings (years)", min_value=1, value=st.session_state['savings_period'], step=1)
-    
-    use_mortgage_period = st.checkbox("Use Mortgage Period", help="If checked, the period of savings will match the mortgage period.")
-    
-    if use_mortgage_period:
-        savings_period = st.session_state['years_left']
-        st.session_state['savings_period'] = savings_period
-        st.write(f"Using mortgage period: {savings_period} years")
-    
+    # Create a checkbox and update the session state based on its value
+    st.session_state.inflation_status = st.checkbox('Include inflation', value=False, help="If checked, the inflationary effect would be used to calculate the 'real monetary value'")
+    #savings_period = st.number_input("Period of Savings (years)", min_value=1, value=st.session_state['savings_period'], step=1)
+    savings_period = st.number_input("Period of Savings (years)", min_value=1, value=st.session_state['years_left'], step=1)
+
     if st.button("Calculate Savings"):
-        st.session_state['savings_period'] = savings_period  # Ensure the period is correctly saved
+        #savings_period = savingsperiod()
         savings_data = calculate_compound_interest(savings_amount, annual_return_rate, inflation_rate, savings_period)
         total_interest = savings_data['Interest Accrued'].sum()
         total_balance = savings_data['Running Balance'].iloc[-1]
