@@ -44,12 +44,12 @@ for key, value in session_state_defaults.items():
     if key not in st.session_state:
         st.session_state[key] = value
 
-st.title("Savings")
+#st.title("Savings")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    st.write("## Savings Calculator")
+    st.write("## Savings calculator")
     savings_amount_input = st.text_input("Amount of Savings", value='1,000')
     try:
         savings_amount = locale.atof(savings_amount_input.replace(',', ''))
@@ -78,7 +78,7 @@ with col1:
         st.write(savings_data)
 
 with col2:
-    st.write("## Mortgage Savings Summary")
+    st.write("## Mortgage Summary")
     st.write(f"**Total Principal Paid (Old):** {st.session_state['total_principal_paid_without_additional']:,.2f}")
     st.write(f"**Total Interest Paid (Old):** {st.session_state['total_interest_paid_without_additional']:,.2f}")
     st.write(f"**Total Principal Paid (New):** {st.session_state['total_principal_paid_with_additional']:,.2f}")
