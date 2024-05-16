@@ -14,14 +14,14 @@ def add_logo():
         """
         <style>
             [data-testid="stSidebarNav"] {
-                background-image: url(https://www.simplilearn.com/ice9/free_resources_article_thumb/what_is_image_Processing.jpg);
+                background-image: url(https://raw.githubusercontent.com/Vadoid/mortgage_buddy/main/img/buddy1.png);
                 background-repeat: no-repeat;
                 padding-top: 120px;
-                background-size: 50px 50px;
+                background-size: 200px 200px;
                 background-position: 20px 20px;
             }
             [data-testid="stSidebarNav"]::before {
-                content: "Mortgage buddy";
+                content: "";
                 margin-left: 20px;
                 margin-top: 20px;
                 font-size: 30px;
