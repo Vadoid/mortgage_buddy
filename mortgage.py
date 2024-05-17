@@ -165,6 +165,15 @@ with tab1:
             st.error("Please enter a valid number for the Current Mortgage Balance.")
 
 # Simulation and Analysis tab
+
+
+# Example date formatting function
+def format_date(date_str):
+    if date_str is None:
+        return "N/A"
+    date = pd.to_datetime(date_str)
+    return date.strftime('%B %Y')
+
 with tab2:
     col1, col2 = st.columns(2)
 
@@ -215,9 +224,6 @@ with tab2:
                         end_date_without_additional = schedule_without_additional['Date'].iloc[-1]
                         end_date_with_additional = schedule_with_additional['Date'].iloc[-1]
 
-                        #st.write(f"**End date (old parameters):** {end_date_without_additional}")
-                        #st.write(f"**End Date (new parameters):** {end_date_with_additional}")
-
                         # Save values to session state
                         st.session_state['total_principal_paid_without_additional'] = total_principal_paid_without_additional
                         st.session_state['total_interest_paid_without_additional'] = total_interest_paid_without_additional
@@ -230,7 +236,12 @@ with tab2:
                         st.session_state['end_date_with_additional'] = end_date_with_additional
                         st.session_state['total_monthly_payment_with_additional'] = total_monthly_payment_with_additional
                         st.session_state['lump_sum'] = lump_sum
-                        st.session_state['years_left'] =  years_left
+                        st.session_state['years_left'] = years_left
+
+                        # Formatting the dates
+                        new_rate_date = format_date(st.session_state['new_rate_date'])
+                        end_date_without_additional = format_date(st.session_state['end_date_without_additional'])
+                        end_date_with_additional = format_date(st.session_state['end_date_with_additional'])
 
                         # Display the summary in the right column
                         with col2:
@@ -240,51 +251,54 @@ with tab2:
                             total_sum_new = total_principal_paid_with_additional + total_interest_paid_with_additional
                             lump_sum_savings = total_interest_paid_without_additional - total_interest_paid_with_additional
 
+                            # Generating the summary text with bold variables
                             if new_rate > 0 and additional_repayment > 0 and lump_sum > 0:
                                 summary_text = (
-                                    f"With the increased rate of {new_rate:.2f}% from {new_rate_date}, you will finish your mortgage at {end_date_with_additional} and your average monthly mortgage payment will be {total_monthly_payment_with_additional:,.2f}, "
-                                    f"the total mortgage principal during this time would be {total_principal_paid_with_additional:,.2f} and the interest will be {total_interest_paid_with_additional:,.2f}, "
-                                    f"which would mean the total sum of {total_principal_paid_with_additional:,.2f} + {total_interest_paid_with_additional:,.2f} = {total_sum_new:,.2f}.\n\n"
-                                    f"By having an additional repayment of {additional_repayment:,.2f}, and a lump sum of {lump_sum:,.2f}, you can mitigate the impact of the rate change, making the total interest {total_interest_paid_with_additional:,.2f} instead of {total_interest_paid_without_additional:,.2f} "
-                                    f"and the total sum repaid would be {total_principal_paid_with_additional:,.2f} + {total_interest_paid_with_additional:,.2f} = {total_sum_new:,.2f} instead of {total_principal_paid_without_additional:,.2f} + {total_interest_paid_without_additional:,.2f} = {total_sum_old:,.2f}.\n\n"
-                                    f"The lump sum payment of {lump_sum:,.2f} saves you {lump_sum_savings:,.2f} in interest over the period of the mortgage."
+                                    f"With the increased rate of **{new_rate:.2f}%** from **{new_rate_date}**, you will finish your mortgage at **{end_date_with_additional}** and your average monthly mortgage payment will be **{total_monthly_payment_with_additional:,.2f}**, "
+                                    f"the total mortgage principal during this time would be **{total_principal_paid_with_additional:,.2f}** and the interest will be **{total_interest_paid_with_additional:,.2f}**, "
+                                    f"which would mean the total sum of **{total_principal_paid_with_additional:,.2f} + {total_interest_paid_with_additional:,.2f} = {total_sum_new:,.2f}**.\n\n"
+                                    f"By having an additional repayment of **{additional_repayment:,.2f}**, and a lump sum of **{lump_sum:,.2f}**, you can mitigate the impact of the rate change, making the total interest **{total_interest_paid_with_additional:,.2f}** instead of **{total_interest_paid_without_additional:,.2f}** "
+                                    f"and the total sum repaid would be **{total_principal_paid_with_additional:,.2f} + {total_interest_paid_with_additional:,.2f} = {total_sum_new:,.2f}** instead of **{total_principal_paid_without_additional:,.2f} + {total_interest_paid_without_additional:,.2f} = {total_sum_old:,.2f}**.\n\n"
+                                    f"The lump sum payment of **{lump_sum:,.2f}** saves you **{lump_sum_savings:,.2f}** in interest over the period of the mortgage."
                                 )
                             elif additional_repayment > 0 and lump_sum > 0:
                                 summary_text = (
-                                    f"With an additional monthly repayment of {additional_repayment:,.2f}, and a lump sum of {lump_sum:,.2f}, the end date would be {end_date_with_additional} instead of {end_date_without_additional}, "
-                                    f"making the total interest {total_interest_paid_with_additional:,.2f} instead of {total_interest_paid_without_additional:,.2f} "
-                                    f"and the total sum repaid would be {total_principal_paid_with_additional:,.2f} + {total_interest_paid_with_additional:,.2f} = {total_sum_new:,.2f} instead of {total_principal_paid_without_additional:,.2f} + {total_interest_paid_without_additional:,.2f} = {total_sum_old:,.2f}.\n\n"
-                                    f"The lump sum payment of {lump_sum:,.2f} saves you {lump_sum_savings:,.2f} in interest over the period of the mortgage."
+                                    f"With an additional monthly repayment of **{additional_repayment:,.2f}**, and a lump sum of **{lump_sum:,.2f}**, the end date would be **{end_date_with_additional}** instead of **{end_date_without_additional}**, "
+                                    f"making the total interest **{total_interest_paid_with_additional:,.2f}** instead of **{total_interest_paid_without_additional:,.2f}** "
+                                    f"and the total sum repaid would be **{total_principal_paid_with_additional:,.2f} + {total_interest_paid_with_additional:,.2f} = {total_sum_new:,.2f}** instead of **{total_principal_paid_without_additional:,.2f} + {total_interest_paid_without_additional:,.2f} = {total_sum_old:,.2f}**.\n\n"
+                                    f"The lump sum payment of **{lump_sum:,.2f}** saves you **{lump_sum_savings:,.2f}** in interest over the period of the mortgage."
                                 )
                             elif new_rate > 0 and lump_sum > 0:
                                 summary_text = (
-                                    f"With the increased rate of {new_rate:.2f}% from {new_rate_date}, you will finish your mortgage at {end_date_with_additional} and your average monthly mortgage payment will be {total_monthly_payment_with_additional:,.2f}, "
-                                    f"the total mortgage principal during this time would be {total_principal_paid_with_additional:,.2f} and the interest will be {total_interest_paid_with_additional:,.2f}, "
-                                    f"which would mean the total sum of {total_principal_paid_with_additional:,.2f} + {total_interest_paid_with_additional:,.2f} = {total_sum_new:,.2f}.\n\n"
-                                    f"The lump sum payment of {lump_sum:,.2f} saves you {lump_sum_savings:,.2f} in interest over the period of the mortgage."
+                                    f"With the increased rate of **{new_rate:.2f}%** from **{new_rate_date}**, you will finish your mortgage at **{end_date_with_additional}** and your average monthly mortgage payment will be **{total_monthly_payment_with_additional:,.2f}**, "
+                                    f"the total mortgage principal during this time would be **{total_principal_paid_with_additional:,.2f}** and the interest will be **{total_interest_paid_with_additional:,.2f}**, "
+                                    f"which would mean the total sum of **{total_principal_paid_with_additional:,.2f} + {total_interest_paid_with_additional:,.2f} = {total_sum_new:,.2f}**.\n\n"
+                                    f"The lump sum payment of **{lump_sum:,.2f}** saves you **{lump_sum_savings:,.2f}** in interest over the period of the mortgage."
                                 )
                             elif additional_repayment > 0:
                                 summary_text = (
-                                    f"With an additional monthly repayment of {additional_repayment:,.2f}, the end date would be {end_date_with_additional} instead of {end_date_without_additional}, "
-                                    f"making the total interest {total_interest_paid_with_additional:,.2f} instead of {total_interest_paid_without_additional:,.2f} "
-                                    f"and the total sum repaid would be {total_principal_paid_with_additional:,.2f} + {total_interest_paid_with_additional:,.2f} = {total_sum_new:,.2f} instead of {total_principal_paid_without_additional:,.2f} + {total_interest_paid_without_additional:,.2f} = {total_sum_old:,.2f}."
+                                    f"With an additional monthly repayment of **{additional_repayment:,.2f}**, the end date would be **{end_date_with_additional}** instead of **{end_date_without_additional}**, "
+                                    f"making the total interest **{total_interest_paid_with_additional:,.2f}** instead of **{total_interest_paid_without_additional:,.2f}** "
+                                    f"and the total sum repaid would be **{total_principal_paid_with_additional:,.2f} + {total_interest_paid_with_additional:,.2f} = {total_sum_new:,.2f}** instead of **{total_principal_paid_without_additional:,.2f} + {total_interest_paid_without_additional:,.2f} = {total_sum_old:,.2f}**."
                                 )
                             elif new_rate > 0:
                                 summary_text = (
-                                    f"With the increased rate of {new_rate:.2f}% from {new_rate_date}, you will finish your mortgage at {end_date_with_additional} and your average monthly mortgage payment will be {total_monthly_payment_with_additional:,.2f}, "
-                                    f"the total mortgage principal during this time would be {total_principal_paid_with_additional:,.2f} and the interest will be {total_interest_paid_with_additional:,.2f}, "
-                                    f"which would mean the total sum of {total_principal_paid_with_additional:,.2f} + {total_interest_paid_with_additional:,.2f} = {total_sum_new:,.2f}."
+                                    f"With the increased rate of **{new_rate:.2f}%** from **{new_rate_date}**, you will finish your mortgage at **{end_date_with_additional}** and your average monthly mortgage payment will be **{total_monthly_payment_with_additional:,.2f}**, "
+                                    f"the total mortgage principal during this time would be **{total_principal_paid_with_additional:,.2f}** and the interest will be **{total_interest_paid_with_additional:,.2f}**, "
+                                    f"which would mean the total sum of **{total_principal_paid_with_additional:,.2f} + {total_interest_paid_with_additional:,.2f} = {total_sum_new:,.2f}**."
                                 )
                             elif lump_sum > 0:
                                 summary_text = (
-                                    f"By making a one-time lump sum payment of {lump_sum:,.2f}, the total interest would be {total_interest_paid_with_additional:,.2f} instead of {total_interest_paid_without_additional:,.2f}, "
-                                    f"saving you {lump_sum_savings:,.2f} in interest over the period of the mortgage."
+                                    f"By making a one-time lump sum payment of **{lump_sum:,.2f}**, the total interest would be **{total_interest_paid_with_additional:,.2f}** instead of **{total_interest_paid_without_additional:,.2f}**, "
+                                    f"saving you **{lump_sum_savings:,.2f}** in interest over the period of the mortgage."
                                 )
                             else:
                                 summary_text = (
-                                    f"Without any changes, you will pay off your mortgage by {end_date_without_additional} with no interest savings."
+                                    f"Without any changes, you will pay off your mortgage by **{end_date_without_additional}** with no interest savings."
                                 )
-                            st.write(summary_text)
+
+                            st.markdown(summary_text, unsafe_allow_html=True)
+
                     else:
                         st.error("Current Mortgage Balance must be greater than 0.")
                 except ValueError:

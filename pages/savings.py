@@ -107,15 +107,49 @@ with col1:
         st.write(savings_data)
 
 with col2:
-    st.write("## Mortgage Summary")
-    st.write(f"**Total Principal Paid (Old):** {st.session_state['total_principal_paid_without_additional']:,.2f}")
-    st.write(f"**Total Interest Paid (Old):** {st.session_state['total_interest_paid_without_additional']:,.2f}")
-    st.write(f"**Total Principal Paid (New):** {st.session_state['total_principal_paid_with_additional']:,.2f}")
-    st.write(f"**Total Interest Paid (New):** {st.session_state['total_interest_paid_with_additional']:,.2f}")
-    st.write(f"**Additional Repayment:** {st.session_state['additional_repayment']:,.2f}")
-    st.write(f"**New Rate:** {st.session_state['new_rate']:.2f}%")
-    st.write(f"**New Rate Date:** {st.session_state['new_rate_date']}")
-    st.write(f"**End Date (Old):** {st.session_state['end_date_without_additional']}")
-    st.write(f"**End Date (New):** {st.session_state['end_date_with_additional']}")
-    st.write(f"**Monthly Payment (New):** {st.session_state['total_monthly_payment_with_additional']:,.2f}")
-    st.write(f"**Lump Sum:** {st.session_state['lump_sum']:,.2f}")
+    # st.write("## Mortgage Summary")
+    # st.write(f"**Total Principal Paid (Old):** {st.session_state['total_principal_paid_without_additional']:,.2f}")
+    # st.write(f"**Total Interest Paid (Old):** {st.session_state['total_interest_paid_without_additional']:,.2f}")
+    # st.write(f"**Total Principal Paid (New):** {st.session_state['total_principal_paid_with_additional']:,.2f}")
+    # st.write(f"**Total Interest Paid (New):** {st.session_state['total_interest_paid_with_additional']:,.2f}")
+    # st.write(f"**Additional Repayment:** {st.session_state['additional_repayment']:,.2f}")
+    # st.write(f"**New Rate:** {st.session_state['new_rate']:.2f}%")
+    # st.write(f"**New Rate Date:** {st.session_state['new_rate_date']}")
+    # st.write(f"**End Date (Old):** {st.session_state['end_date_without_additional']}")
+    # st.write(f"**End Date (New):** {st.session_state['end_date_with_additional']}")
+    # st.write(f"**Monthly Payment (New):** {st.session_state['total_monthly_payment_with_additional']:,.2f}")
+    # st.write(f"**Lump Sum:** {st.session_state['lump_sum']:,.2f}")
+    st.markdown(
+        """
+        <div style="background-color: #f9f9f9; padding: 15px; border-radius: 10px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+            <h2 style="color: #4e79a7;">Mortgage Summary</h2>
+            <p style="font-size: 16px; color: #333;">
+                <strong>Total Principal Paid (Old):</strong> {total_principal_paid_without_additional:,.2f} <br>
+                <strong>Total Interest Paid (Old):</strong> {total_interest_paid_without_additional:,.2f} <br>
+                <strong>Total Principal Paid (New):</strong> {total_principal_paid_with_additional:,.2f} <br>
+                <strong>Total Interest Paid (New):</strong> {total_interest_paid_with_additional:,.2f} <br>
+                <strong>Additional Repayment:</strong> {additional_repayment:,.2f} <br>
+                <strong>New Rate:</strong> {new_rate:.2f}% <br>
+                <strong>New Rate Date:</strong> {new_rate_date} <br>
+                <strong>End Date (Old):</strong> {end_date_without_additional} <br>
+                <strong>End Date (New):</strong> {end_date_with_additional} <br>
+                <strong>Monthly Payment (New):</strong> {total_monthly_payment_with_additional:,.2f} <br>
+                <strong>Lump Sum:</strong> {lump_sum:,.2f} <br>
+            </p>
+        </div>
+        """.format(
+            total_principal_paid_without_additional=st.session_state['total_principal_paid_without_additional'],
+            total_interest_paid_without_additional=st.session_state['total_interest_paid_without_additional'],
+            total_principal_paid_with_additional=st.session_state['total_principal_paid_with_additional'],
+            total_interest_paid_with_additional=st.session_state['total_interest_paid_with_additional'],
+            additional_repayment=st.session_state['additional_repayment'],
+            new_rate=st.session_state['new_rate'],
+            new_rate_date=st.session_state['new_rate_date'],
+            end_date_without_additional=st.session_state['end_date_without_additional'],
+            end_date_with_additional=st.session_state['end_date_with_additional'],
+            total_monthly_payment_with_additional=st.session_state['total_monthly_payment_with_additional'],
+            lump_sum=st.session_state['lump_sum']
+        ),
+        unsafe_allow_html=True
+    )
+
